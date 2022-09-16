@@ -1,6 +1,5 @@
 const {By, Key, Builder, Capabilities, until} = require('selenium-webdriver')
 require('chromedriver')
-require('jest')
 const fs = require('fs')
 const PNG = require('pngjs').PNG
 const pixelmatch = require('pixelmatch')
@@ -12,6 +11,7 @@ const _FLAG_PIXEL = '&is-dynamic-pixel-ratio=0'
 const _FLAG_ROTATION = '&autospindirection=none'
 const _FLAG_CLIPPING = '&clipping-plane=false'
 let driver
+let cap = new Capabilities
 
 describe('Viewer testing by screenshots', () => {
     beforeEach(async () => {
@@ -20,7 +20,7 @@ describe('Viewer testing by screenshots', () => {
     })
     afterEach(async () => {
         await driver.quit()
-        console.log('дошел не')
+        console.log('Terminate')
     })
     it('Checkout CAD with camera Topdown', async () => {
         domain +=_FLAG_MODEL + _FLAG_CAMERA + _FLAG_PIXEL + _FLAG_ROTATION + _FLAG_CLIPPING
@@ -29,7 +29,7 @@ describe('Viewer testing by screenshots', () => {
         driver.takeScreenshot().then(
             function (image, err) {
                 require('fs').writeFile('test_img.png', image, 'base64', function (err) {
-                    if (err === null) return console.log('Success')
+                    if (err === null) return console.log('Get screenshot success')
                     else console.log('Failed getting screenshot')
                 });
             }
@@ -42,10 +42,13 @@ describe('Viewer testing by screenshots', () => {
         const diff = new PNG({width, height})
 
         const numDiffPixels = pixelmatch(_TEST_IMG.data, _EXCEPT_IMG.data, diff.data, width, height, {threshold: 0.1})
-        console.log(numDiffPixels)
+        console.log(numDiffPixels, 'pixels are different')
+
+        if (numDiffPixels < 10) driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"passed","reason": "Models matched!"}}')
+        else driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "Models did not matched!"}}');
 
         return expect(numDiffPixels).toBeLessThanOrEqual(10)
-    })
+    }, 30000)
     // it('Checkout CAD with camera Topdown', async () => {
     //     domain +=_FLAG_MODEL + _FLAG_CAMERA + _FLAG_PIXEL + _FLAG_ROTATION + _FLAG_CLIPPING
     //     await driver.get(domain)
