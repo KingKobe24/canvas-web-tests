@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "viewer-test": "browserstack-node-sdk jest ViewerTest.test.js"
   },
   "author": "Roman Korovko",
   "license": "ISC",
@@ -16,6 +17,7 @@
     "selenium-webdriver": "^4.4.0"
   },
   "devDependencies": {
+    "browserstack-node-sdk": "^1.2.7",
     "chromedriver": "^105.0.0"
   }
 }
