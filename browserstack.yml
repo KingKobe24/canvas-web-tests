@@ -1,0 +1,23 @@
+userName: romankorovko_zyWgKA
+accessKey: tLx4WFYiqvzoDzFRVqyS
+platforms:
+  - os: OS X
+    osVersion: Monterey
+    browserName: Chrome
+    browserVersion: '105.0'
+    resolution: 2560x1600
+#  - os: OS X
+#    osVersion: Monterey
+#    browserName: Safari
+#    browserVersion: 15.3
+#  - os: Windows
+#    osVersion: 11
+#    browserName: Chrome
+#    browserVersion: 105.0
+parallelsPerPlatform: 1
+browserstackLocal: false
+buildName: canvas-browserstack-build 1.0
+projectName: Canvas Web Testing
+debug: true
+networkLogs: true
+consoleLogs: info
