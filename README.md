@@ -27,6 +27,6 @@ Run the script
 npm run viewer-test
 ```
 ## Get results on BrowserStack's Dashboard
-**Coming soon**
+*Coming soon*
 ## Send results of test session to Jira Atlassian
 *Coming soon*
