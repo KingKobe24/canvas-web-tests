@@ -4,154 +4,310 @@ require('chromedriver')
 const fs = require('fs')
 const PNG = require('pngjs').PNG
 const pixelmatch = require('pixelmatch')
-
-let domain = 'https://canvas.io/viewer/Y8CkkiXi?'
-const _FLAG_MODEL = '&startmodel=cad'
-const _FLAG_CAMERA_TOPDOWN = '&camera=topdown'
-const _FLAG_CAMERA_OVERVIEW = '&camera=overview'
-const _FLAG_PIXEL = '&is-dynamic-pixel-ratio=0'
-const _FLAG_ROTATION = '&autospindirection=none'
-const _FLAG_CLIPPING_FALSE = '&clipping-plane=false'
-const _FLAG_CLIPPING_TRUE = '&clipping-plane=true'
-
+let numDiffPixels
+let domain
+const FLAG = {
+    MODEL: {
+        CAD: '&startmodel=cad',
+        ORIGINAL: '&startmodel=original'
+    },
+    CAMERA: {
+        TOPDOWN: '&camera=topdown',
+        OVERVIEW:'&camera=overview',
+    },
+    CLIPPING: {
+        TRUE: '&clipping-plane=true',
+        FALSE:'&clipping-plane=false',
+    },
+    PIXEL: '&is-dynamic-pixel-ratio=0',
+    ROTATION: '&autospindirection=none',
+}
+const BASE_PATH = './viewer_test_automation/src'
+const BROWSERSTACK_RESPONSES = {
+    passed: 'passed',
+    failed: 'failed'
+}
+const PIXEL_THRESHOLD = 80
+const IT_TEST_TIMEOUT = 30_000
 let driver
-let cap = new Capabilities
 
 describe('Viewer testing by screenshots', () => {
+
     beforeEach(async () => {
+        domain = 'https://canvas.io/viewer/Y8CkkiXi?'
         driver = await new Builder().forBrowser('chrome').build()
-        await driver.manage().window().setRect({x: 0, y: 0, width: 1000, height: 1000})
+        await driver.manage().window().setRect({x: 0, y: 0, width: 1_000, height: 1_000})
     })
+
     afterEach(async () => {
         await driver.quit()
-        console.log('Terminate')
     })
 
-    // it('model=cad | camera=Topdown | clipping=false', async () => {
-    //     domain +=_FLAG_MODEL + _FLAG_CAMERA_TOPDOWN + _FLAG_PIXEL + _FLAG_ROTATION + _FLAG_CLIPPING_FALSE
-    //     await driver.get(domain)
-    //     await driver.wait(until.elementLocated(By.css('span.model-mode')))
-    //     await driver.sleep(2000)
-    //     console.log('кликнул жиэс');
-    //     driver.takeScreenshot().then(
-    //         function (image, err) {
-    //             require('fs').writeFile('./viewer_test_automation/src/screenshots/c_t_f.png', image, 'base64', function (err) {
-    //                 if (err === null) return console.log('Get screenshot success')
-    //                 else console.log('Failed getting screenshot')
-    //             });
-    //         }
-    //     );
-    //
-    //     const _TEST_IMG = PNG.sync.read(fs.readFileSync('./viewer_test_automation/src/screenshots/c_t_f.png'))
-    //     const _EXCEPT_IMG = PNG.sync.read(fs.readFileSync('./viewer_test_automation/src/c_t_f_expect.png'))
-    //     const {width, height} = _TEST_IMG
-    //     const diff = new PNG({width, height})
-    //
-    //     const numDiffPixels = pixelmatch(_TEST_IMG.data, _EXCEPT_IMG.data, diff.data, width, height, {threshold: 0.1})
-    //     console.log(numDiffPixels, 'pixels are different')
-    //
-    //     if (numDiffPixels < 10) driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"passed","reason": "CTF Models matched!"}}')
-    //     else driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "CTF did not matched!"}}');
-    //
-    //     return expect(numDiffPixels).toBeLessThanOrEqual(10)
-    // }, 30000)
-
-    // it('model=cad | camera=Topdown | clipping=true', async () => {
-    //     domain +=_FLAG_MODEL + _FLAG_CAMERA_TOPDOWN + _FLAG_PIXEL + _FLAG_ROTATION + _FLAG_CLIPPING_TRUE
-    //     await driver.get(domain)
-    //     await driver.wait(until.elementLocated(By.css('span.model-mode')))
-    //     await driver.sleep(2000)
-    //
-    //     driver.takeScreenshot().then(
-    //         function (image, err) {
-    //             require('fs').writeFile('./viewer_test_automation/src/screenshots/c_t_t.png', image, 'base64', function (err) {
-    //                 if (err === null) return console.log('Get screenshot success')
-    //                 else console.log('Failed getting screenshot')
-    //             });
-    //         }
-    //     );
-    //
-    //     const _TEST_IMG = PNG.sync.read(fs.readFileSync('./viewer_test_automation/src/screenshots/c_t_t.png'))
-    //     const _EXCEPT_IMG = PNG.sync.read(fs.readFileSync('./viewer_test_automation/src/c_t_t_expect.png'))
-    //     const {width, height} = _TEST_IMG
-    //     const diff = new PNG({width, height})
-    //
-    //     const numDiffPixels = pixelmatch(_TEST_IMG.data, _EXCEPT_IMG.data, diff.data, width, height, {threshold: 0.1})
-    //     console.log(numDiffPixels, 'pixels are different')
-    //
-    //     if (numDiffPixels < 10) driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"passed","reason": "CTT Models matched!"}}')
-    //     else driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "CTT did not matched!"}}');
-    //
-    //     return expect(numDiffPixels).toBeLessThanOrEqual(10)
-    // }, 30000)
-
-    // it('model=cad | camera=overview | clipping=false', async () => {
-    //     domain +=_FLAG_MODEL + _FLAG_CAMERA_OVERVIEW + _FLAG_PIXEL + _FLAG_ROTATION + _FLAG_CLIPPING_FALSE
-    //     await driver.get(domain)
-    //     await driver.wait(until.elementLocated(By.css('span.model-mode')))
-    //     await driver.sleep(2000)
-    //
-    //
-    //     driver.takeScreenshot().then(
-    //         function (image, err) {
-    //             require('fs').writeFile('./viewer_test_automation/src/screenshots/c_o_f.png', image, 'base64', function (err) {
-    //                 if (err === null) return console.log('Get screenshot success')
-    //                 else console.log('Failed getting screenshot')
-    //             })
-    //         }
-    //     )
-    //
-    //     const _TEST_IMG = PNG.sync.read(fs.readFileSync('./viewer_test_automation/src/screenshots/c_o_f.png'))
-    //     const _EXCEPT_IMG = PNG.sync.read(fs.readFileSync('./viewer_test_automation/src/c_o_f_expect.png'))
-    //     const {width, height} = _TEST_IMG
-    //     const diff = new PNG({width, height})
-    //
-    //     const numDiffPixels = pixelmatch(_TEST_IMG.data, _EXCEPT_IMG.data, diff.data, width, height, {threshold: 0.1})
-    //     console.log(numDiffPixels, 'pixels are different')
-    //
-    //     if (numDiffPixels < 10) driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"passed","reason": "COF Models matched!"}}')
-    //     else driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "COF did not matched!"}}')
-    //     console.log('doshlo suda')
-    //     return expect(numDiffPixels).toBeLessThanOrEqual(10)
-    // }, 30000)
-
-    it('model=cad | camera=Topdown | clipping=true', async () => {
-        domain +=_FLAG_MODEL + _FLAG_CAMERA_OVERVIEW + _FLAG_PIXEL + _FLAG_ROTATION + _FLAG_CLIPPING_FALSE
-        await driver.get(domain)
-        await driver.wait(until.elementLocated(By.css('span.model-mode')))
-        await driver.sleep(2000)
-
-        const screenshot = await driver.takeScreenshot()
-
-
-
-        await new Promise((resolve, reject) => {
-            fs.writeFile('./viewer_test_automation/src/screenshots/c_o_f.png', screenshot, 'base64', err => {
-                !err ? resolve('Get screenshot success') : reject('Failed getting screenshot')
-            })
-        })
-
-        const _TEST_IMG = await PNG.sync.read(fs.readFileSync('./viewer_test_automation/src/screenshots/c_o_f.png'))
-        const _EXCEPT_IMG = await PNG.sync.read(fs.readFileSync('./viewer_test_automation/src/c_o_f_expect.png'))
-        const diff = new PNG(_TEST_IMG)
-
-
-
-        const numDiffPixels = pixelmatch(_TEST_IMG.data, _EXCEPT_IMG.data, diff.data, _TEST_IMG.width, _TEST_IMG.height, {threshold: 0.1})
-        console.log(numDiffPixels, 'pixels are different')
-
-        try {
-            if (numDiffPixels < 10) {
-                driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"passed","reason": "CTT Models matched!"}}')
-            } else {
-                driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "CTT did not matched!"}}')
+    it('model=cad | camera=topdown | clipping=false', async () => {
+        const FILE_NAME = 'c_t_f'
+        const result = {
+            action: 'setSessionStatus',
+            arguments: {
+                status: BROWSERSTACK_RESPONSES.passed,
+                reason: `${FILE_NAME} models matched!`
             }
-        } catch(e) {
-            console.log('weeeeeee', e);
+        }
+        try {
+            driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=topdown | clipping=false"}}')
+            domain += FLAG.MODEL.CAD + FLAG.CAMERA.TOPDOWN + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.FALSE
+
+            await driver.get(domain)
+            await driver.wait(until.elementLocated(By.css('span.model-mode')))
+            await driver.sleep(2000)
+
+            await fs.writeFile(`${BASE_PATH}/screenshots/${FILE_NAME}.png`, await driver.takeScreenshot(), 'base64', (err) => {
+                return console.log('Got screenshot ' + FILE_NAME)
+            })
+            await driver.sleep(2000)
+            const {data, width, height} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/screenshots/${FILE_NAME}.png`))
+            const {data: expectData} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/${FILE_NAME}_expect.png`))
+            const {data: diffData} = new PNG({width, height})
+            await driver.sleep(2000)
+
+            numDiffPixels = pixelmatch(data, expectData, diffData, width, height, {threshold: 0.2})
+            console.log(numDiffPixels);
+
+            if (numDiffPixels > PIXEL_THRESHOLD) {
+                result.arguments.status = BROWSERSTACK_RESPONSES.failed
+                result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
+            }
+        } catch (e) {
+            result.arguments.status = BROWSERSTACK_RESPONSES.failed
+            result.arguments.reason = `${FILE_NAME}, ${e}`
+        } finally {
+            driver.executeScript('browserstack_executor:' + JSON.stringify(result))
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
+        }
+    }, IT_TEST_TIMEOUT)
+
+    it('model=cad | camera=topdown | clipping=true', async () => {
+        const FILE_NAME = 'c_t_t'
+        const result = {
+            action: 'setSessionStatus',
+            arguments: {
+                status: BROWSERSTACK_RESPONSES.passed,
+                reason: `${FILE_NAME} models matched!`
+            }
+        }
+        try {
+            driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=topdown | clipping=true"}}')
+
+            domain += FLAG.MODEL.CAD + FLAG.CAMERA.TOPDOWN + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.TRUE
+
+            await driver.get(domain)
+            await driver.wait(until.elementLocated(By.css('span.model-mode')))
+            await driver.sleep(2000)
+
+            await fs.writeFile(`${BASE_PATH}/screenshots/${FILE_NAME}.png`, await driver.takeScreenshot(), 'base64', (err) => {
+                return console.log('Got screenshot ' + FILE_NAME)
+            })
+
+            await driver.sleep(2000)
+            const {data, width, height} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/screenshots/${FILE_NAME}.png`))
+            const {data: expectData} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/${FILE_NAME}_expect.png`))
+            const {data: diffData} = new PNG({width, height})
+            await driver.sleep(2000)
+
+            const numDiffPixels = pixelmatch(data, expectData, diffData, width, height, {threshold: 0.2})
+            console.log(numDiffPixels);
+
+            if (numDiffPixels > PIXEL_THRESHOLD) {
+                result.arguments.status = BROWSERSTACK_RESPONSES.failed
+                result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
+            }
+        } catch (e) {
+            result.arguments.status = BROWSERSTACK_RESPONSES.failed
+            result.arguments.reason = `${FILE_NAME}, ${e}`
+        } finally {
+            driver.executeScript('browserstack_executor:' + JSON.stringify(result))
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
+        }
+    }, IT_TEST_TIMEOUT)
+
+    it('model=cad | camera=overview | clipping=true', async () => {
+        const FILE_NAME = 'c_o_t'
+        const result = {
+            action: 'setSessionStatus',
+            arguments: {
+                status: BROWSERSTACK_RESPONSES.passed,
+                reason: `${FILE_NAME} models matched!`
+            }
         }
 
-        return expect(1).toBe(1)
+        try {
+            driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=overview | clipping=true"}}')
 
-        return expect(numDiffPixels).toBeLessThanOrEqual(10)
-    }, 30000)
+            domain += FLAG.MODEL.CAD + FLAG.CAMERA.OVERVIEW + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.TRUE
+
+            await driver.get(domain)
+            await driver.wait(until.elementLocated(By.css('span.model-mode')))
+            await driver.sleep(2000)
+
+            await fs.writeFile(`${BASE_PATH}/screenshots/${FILE_NAME}.png`, await driver.takeScreenshot(), 'base64', (err) => {
+                return console.log('Got screenshot ' + FILE_NAME)
+            })
+
+            await driver.sleep(2000)
+            const {data, width, height} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/screenshots/${FILE_NAME}.png`))
+            const {data: expectData} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/${FILE_NAME}_expect.png`))
+            const {data: diffData} = new PNG({width, height})
+            await driver.sleep(2000)
+
+            const numDiffPixels = pixelmatch(data, expectData, diffData, width, height, {threshold: 0.2})
+            console.log(numDiffPixels);
+
+            if (numDiffPixels > PIXEL_THRESHOLD) {
+                result.arguments.status = BROWSERSTACK_RESPONSES.failed
+                result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
+            }
+        } catch (e) {
+            result.arguments.status = BROWSERSTACK_RESPONSES.failed
+            result.arguments.reason = `${FILE_NAME}, ${e}`
+        } finally {
+            driver.executeScript('browserstack_executor:' + JSON.stringify(result))
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
+        }
+    }, IT_TEST_TIMEOUT)
+
+    it('model=cad | camera=overview | clipping=false', async () => {
+        const FILE_NAME = 'c_o_f'
+        const result = {
+            action: 'setSessionStatus',
+            arguments: {
+                status: BROWSERSTACK_RESPONSES.passed,
+                reason: `${FILE_NAME} models matched!`
+            }
+        }
+
+        try {
+            driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=overview | clipping=false"}}')
+
+            domain += FLAG.MODEL.CAD + FLAG.CAMERA.OVERVIEW + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.FALSE
+
+            await driver.get(domain)
+            await driver.wait(until.elementLocated(By.css('span.model-mode')))
+            await driver.sleep(2000)
+
+            await fs.writeFile(`${BASE_PATH}/screenshots/${FILE_NAME}.png`, await driver.takeScreenshot(), 'base64', (err) => {
+                return console.log('Got screenshot ' + FILE_NAME)
+            })
+
+            await driver.sleep(2000)
+            const {data, width, height} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/screenshots/${FILE_NAME}.png`))
+            const {data: expectData} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/${FILE_NAME}_expect.png`))
+            const {data: diffData} = new PNG({width, height})
+            await driver.sleep(2000)
+
+            const numDiffPixels = pixelmatch(data, expectData, diffData, width, height, {threshold: 0.2})
+            console.log(numDiffPixels);
+
+            if (numDiffPixels > PIXEL_THRESHOLD) {
+                result.arguments.status = BROWSERSTACK_RESPONSES.failed
+                result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
+            }
+        } catch (e) {
+            result.arguments.status = BROWSERSTACK_RESPONSES.failed
+            result.arguments.reason = `${FILE_NAME}, ${e}`
+        } finally {
+            driver.executeScript('browserstack_executor:' + JSON.stringify(result))
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
+        }
+    }, IT_TEST_TIMEOUT)
+
+    it('model=original | camera=overview | clipping=false', async () => {
+        const FILE_NAME = 'o_o_f'
+        const result = {
+            action: 'setSessionStatus',
+            arguments: {
+                status: BROWSERSTACK_RESPONSES.passed,
+                reason: `${FILE_NAME} models matched!`
+            }
+        }
+
+        try {
+            driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=original | camera=overview | clipping=false"}}')
+
+            domain += FLAG.MODEL.ORIGINAL + FLAG.CAMERA.OVERVIEW + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.FALSE
+
+            await driver.get(domain)
+            await driver.wait(until.elementLocated(By.css('span.model-mode')))
+            await driver.sleep(2000)
+
+            await fs.writeFile(`${BASE_PATH}/screenshots/${FILE_NAME}.png`, await driver.takeScreenshot(), 'base64', (err) => {
+                return console.log('Got screenshot ' + FILE_NAME)
+            })
+
+            await driver.sleep(2000)
+            const {data, width, height} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/screenshots/${FILE_NAME}.png`))
+            const {data: expectData} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/${FILE_NAME}_expect.png`))
+            const {data: diffData} = new PNG({width, height})
+            await driver.sleep(2000)
+
+            const numDiffPixels = pixelmatch(data, expectData, diffData, width, height, {threshold: 0.2})
+            console.log(numDiffPixels);
+
+            if (numDiffPixels > PIXEL_THRESHOLD) {
+                result.arguments.status = BROWSERSTACK_RESPONSES.failed
+                result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
+            }
+        } catch (e) {
+            result.arguments.status = BROWSERSTACK_RESPONSES.failed
+            result.arguments.reason = `${FILE_NAME}, ${e}`
+        } finally {
+            driver.executeScript('browserstack_executor:' + JSON.stringify(result))
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
+        }
+    }, IT_TEST_TIMEOUT)
+
+    it('model=original | camera=topdown | clipping=false', async () => {
+        const FILE_NAME = 'o_t_f'
+        const result = {
+            action: 'setSessionStatus',
+            arguments: {
+                status: BROWSERSTACK_RESPONSES.passed,
+                reason: `${FILE_NAME} models matched!`
+            }
+        }
+
+        try {
+            driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=original | camera=topdown | clipping=false"}}')
+
+            domain += FLAG.MODEL.ORIGINAL + FLAG.CAMERA.TOPDOWN + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.FALSE
+
+            await driver.get(domain)
+            await driver.wait(until.elementLocated(By.css('span.model-mode')))
+            await driver.sleep(2000)
+
+            await fs.writeFile(`${BASE_PATH}/screenshots/${FILE_NAME}.png`, await driver.takeScreenshot(), 'base64', (err) => {
+                return console.log('Got screenshot ' + FILE_NAME)
+            })
+
+            await driver.sleep(2000)
+            const {data, width, height} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/screenshots/${FILE_NAME}.png`))
+            const {data: expectData} = PNG.sync.read(fs.readFileSync(`${BASE_PATH}/${FILE_NAME}_expect.png`))
+            const {data: diffData} = new PNG({width, height})
+            await driver.sleep(2000)
+
+            const numDiffPixels = pixelmatch(data, expectData, diffData, width, height, {threshold: 0.2})
+            console.log(numDiffPixels);
+
+            if (numDiffPixels > PIXEL_THRESHOLD) {
+                result.arguments.status = BROWSERSTACK_RESPONSES.failed
+                result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
+            }
+        } catch (e) {
+            result.arguments.status = BROWSERSTACK_RESPONSES.failed
+            result.arguments.reason = `${FILE_NAME}, ${e}`
+        } finally {
+            driver.executeScript('browserstack_executor:' + JSON.stringify(result))
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
+        }
+    }, IT_TEST_TIMEOUT)
+
 })
+
