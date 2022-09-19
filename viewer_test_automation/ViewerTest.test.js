@@ -76,12 +76,12 @@ describe('Viewer testing by screenshots', () => {
                 result.arguments.status = BROWSERSTACK_RESPONSES.failed
                 result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
             }
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         } catch (e) {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
-            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         }
     }, IT_TEST_TIMEOUT)
 
@@ -120,12 +120,12 @@ describe('Viewer testing by screenshots', () => {
                 result.arguments.status = BROWSERSTACK_RESPONSES.failed
                 result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
             }
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         } catch (e) {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
-            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         }
     }, IT_TEST_TIMEOUT)
 
@@ -165,12 +165,12 @@ describe('Viewer testing by screenshots', () => {
                 result.arguments.status = BROWSERSTACK_RESPONSES.failed
                 result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
             }
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         } catch (e) {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
-            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         }
     }, IT_TEST_TIMEOUT)
 
@@ -210,12 +210,12 @@ describe('Viewer testing by screenshots', () => {
                 result.arguments.status = BROWSERSTACK_RESPONSES.failed
                 result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
             }
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         } catch (e) {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
-            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         }
     }, IT_TEST_TIMEOUT)
 
@@ -255,12 +255,12 @@ describe('Viewer testing by screenshots', () => {
                 result.arguments.status = BROWSERSTACK_RESPONSES.failed
                 result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
             }
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         } catch (e) {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
-            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         }
     }, IT_TEST_TIMEOUT)
 
@@ -300,12 +300,12 @@ describe('Viewer testing by screenshots', () => {
                 result.arguments.status = BROWSERSTACK_RESPONSES.failed
                 result.arguments.reason = `${FILE_NAME}: ${numDiffPixels} pixels are different!`
             }
+            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         } catch (e) {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
-            expect(numDiffPixels).toBeLessThanOrEqual(PIXEL_THRESHOLD)
         }
     }, IT_TEST_TIMEOUT)
 
