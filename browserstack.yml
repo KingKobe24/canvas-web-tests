@@ -16,7 +16,7 @@ platforms:
 #    browserVersion: 105.0
 parallelsPerPlatform: 1
 browserstackLocal: false
-buildName: canvas-browserstack-build 5.0
+buildName: canvas-browserstack-build 6.8
 projectName: Canvas Web Testing
 debug: true
 networkLogs: true

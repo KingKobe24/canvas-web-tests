@@ -65,5 +65,3 @@ typings/
 # JetBrains IDE
 .idea
 
-# Screenshots
-viewer_test_automation/src/screenshots/**

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "viewer-test": "browserstack-node-sdk jest viewer_test_automation/ViewerTest.test.js"
+    "viewer-test": "browserstack-node-sdk jest viewer_test_automation/viewerTest.test.js",
+    "getSrcScreenshots": "browserstack-node-sdk jest viewer_test_automation/getSrcScreenshots.test.js"
   },
   "author": "Roman Korovko",
   "license": "ISC",

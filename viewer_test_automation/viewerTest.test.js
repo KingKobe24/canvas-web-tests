@@ -1,4 +1,4 @@
-require('dotenv').config()
+// const { VIEW_MODE} = require('../constants')
 const {By, Key, Builder, Capabilities, until} = require('selenium-webdriver')
 require('chromedriver')
 const fs = require('fs')
@@ -9,7 +9,7 @@ let domain
 const FLAG = {
     MODEL: {
         CAD: '&startmodel=cad',
-        ORIGINAL: '&startmodel=original'
+        ORIGINAL: '&startmodel=original',
     },
     CAMERA: {
         TOPDOWN: '&camera=topdown',
@@ -21,6 +21,7 @@ const FLAG = {
     },
     PIXEL: '&is-dynamic-pixel-ratio=0',
     ROTATION: '&autospindirection=none',
+    // UI_OFF: '&disable-ui'
 }
 const BASE_PATH = './viewer_test_automation/src'
 const BROWSERSTACK_RESPONSES = {
@@ -35,11 +36,13 @@ describe('Viewer testing by screenshots', () => {
 
     beforeEach(async () => {
         domain = 'https://canvas.io/viewer/Y8CkkiXi?'
-        driver = await new Builder().forBrowser('chrome').build()
+        driver = await new Builder().forBrowser('chrome').
+        usingServer('http://romankorovko_zyWgKA:tLx4WFYiqvzoDzFRVqyS@hub-cloud.browserstack.com/wd/hub').
+        build()
         await driver.manage().window().setRect({x: 0, y: 0, width: 1_000, height: 1_000})
     })
 
-    afterEach(async () => {
+    afterAll(async () => {
         await driver.quit()
     })
 
@@ -55,6 +58,7 @@ describe('Viewer testing by screenshots', () => {
         try {
             driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=topdown | clipping=false"}}')
             domain += FLAG.MODEL.CAD + FLAG.CAMERA.TOPDOWN + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.FALSE
+            console.log(domain)
 
             await driver.get(domain)
             await driver.wait(until.elementLocated(By.css('span.model-mode')))
@@ -81,6 +85,7 @@ describe('Viewer testing by screenshots', () => {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
+            console.log('finally');
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
         }
     }, IT_TEST_TIMEOUT)
@@ -125,6 +130,8 @@ describe('Viewer testing by screenshots', () => {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
+            console.log('finally');
+
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
         }
     }, IT_TEST_TIMEOUT)
@@ -170,6 +177,8 @@ describe('Viewer testing by screenshots', () => {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
+            console.log('finally');
+
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
         }
     }, IT_TEST_TIMEOUT)
@@ -215,6 +224,8 @@ describe('Viewer testing by screenshots', () => {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
+            console.log('finally');
+
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
         }
     }, IT_TEST_TIMEOUT)
@@ -260,6 +271,8 @@ describe('Viewer testing by screenshots', () => {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
+            console.log('finally');
+
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
         }
     }, IT_TEST_TIMEOUT)
@@ -305,6 +318,8 @@ describe('Viewer testing by screenshots', () => {
             result.arguments.status = BROWSERSTACK_RESPONSES.failed
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
+            console.log('finally');
+
             driver.executeScript('browserstack_executor:' + JSON.stringify(result))
         }
     }, IT_TEST_TIMEOUT)
