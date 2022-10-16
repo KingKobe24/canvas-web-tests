@@ -30,6 +30,7 @@ const BROWSERSTACK_RESPONSES = {
 }
 const PIXEL_THRESHOLD = 80
 const IT_TEST_TIMEOUT = 30_000
+const HOOK_TIMEOUT = 10_000
 let driver
 
 describe('Viewer testing by screenshots', () => {
@@ -43,6 +44,7 @@ describe('Viewer testing by screenshots', () => {
     })
 
     afterAll(async () => {
+        console.log("afterEachblock")
         await driver.quit()
     })
 
@@ -56,7 +58,7 @@ describe('Viewer testing by screenshots', () => {
             }
         }
         try {
-            driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=topdown | clipping=false"}}')
+            await driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=topdown | clipping=false"}}')
             domain += FLAG.MODEL.CAD + FLAG.CAMERA.TOPDOWN + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.FALSE
             console.log(domain)
 
@@ -86,7 +88,7 @@ describe('Viewer testing by screenshots', () => {
             result.arguments.reason = `${FILE_NAME}, ${e}`
         } finally {
             console.log('finally');
-            driver.executeScript('browserstack_executor:' + JSON.stringify(result))
+            await driver.executeScript('browserstack_executor:' + JSON.stringify(result))
         }
     }, IT_TEST_TIMEOUT)
 
@@ -100,7 +102,7 @@ describe('Viewer testing by screenshots', () => {
             }
         }
         try {
-            driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=topdown | clipping=true"}}')
+            await driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=topdown | clipping=true"}}')
 
             domain += FLAG.MODEL.CAD + FLAG.CAMERA.TOPDOWN + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.TRUE
 
@@ -132,7 +134,7 @@ describe('Viewer testing by screenshots', () => {
         } finally {
             console.log('finally');
 
-            driver.executeScript('browserstack_executor:' + JSON.stringify(result))
+            await driver.executeScript('browserstack_executor:' + JSON.stringify(result))
         }
     }, IT_TEST_TIMEOUT)
 
@@ -147,7 +149,7 @@ describe('Viewer testing by screenshots', () => {
         }
 
         try {
-            driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=overview | clipping=true"}}')
+            await driver.executeScript('browserstack_executor: {"action": "setSessionName", "arguments": {"name": "VIEWER: model=cad | camera=overview | clipping=true"}}')
 
             domain += FLAG.MODEL.CAD + FLAG.CAMERA.OVERVIEW + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.TRUE
 
@@ -179,7 +181,7 @@ describe('Viewer testing by screenshots', () => {
         } finally {
             console.log('finally');
 
-            driver.executeScript('browserstack_executor:' + JSON.stringify(result))
+            await driver.executeScript('browserstack_executor:' + JSON.stringify(result))
         }
     }, IT_TEST_TIMEOUT)
 

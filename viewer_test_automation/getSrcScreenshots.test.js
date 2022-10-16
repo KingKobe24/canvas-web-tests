@@ -1,12 +1,15 @@
-// const { VIEW_MODE } = require('/constants')
+// const { VIEW_MODE} = require('../constants')
 const {By, Key, Builder, Capabilities, until} = require('selenium-webdriver')
 require('chromedriver')
 const fs = require('fs')
+const PNG = require('pngjs').PNG
+const pixelmatch = require('pixelmatch')
+let numDiffPixels
 let domain
 const FLAG = {
     MODEL: {
         CAD: '&startmodel=cad',
-        ORIGINAL: '&startmodel=original'
+        ORIGINAL: '&startmodel=original',
     },
     CAMERA: {
         TOPDOWN: '&camera=topdown',
@@ -25,9 +28,10 @@ const BROWSERSTACK_RESPONSES = {
     passed: 'passed',
     failed: 'failed'
 }
+const PIXEL_THRESHOLD = 80
 const IT_TEST_TIMEOUT = 30_000
+const HOOK_TIMEOUT = 10_000
 let driver
-
 
 
 describe('Get Source Screenshots', () => {
@@ -115,7 +119,7 @@ describe('Get Source Screenshots', () => {
             domain += FLAG.MODEL.CAD + FLAG.CAMERA.OVERVIEW + FLAG.PIXEL + FLAG.ROTATION + FLAG.CLIPPING.TRUE
 
             await driver.get(domain)
-            await driver.wait(until.elementLocated(By.css('span.model-mode')))
+            await driver.wait(until.elementLocated(By.css('div.viewer-constraint')))
             await driver.sleep(2000)
 
             await fs.writeFile(`${BASE_PATH}/${FILE_NAME}_expect.png`, await driver.takeScreenshot(), 'base64', (err) => {

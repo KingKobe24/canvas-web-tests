@@ -6,16 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "viewer-test": "browserstack-node-sdk jest viewer_test_automation/viewerTest.test.js",
-    "getSrcScreenshots": "browserstack-node-sdk jest viewer_test_automation/getSrcScreenshots.test.js"
+    "getSrcScreenshots": "browserstack-node-sdk jest viewer_test_automation/getSrcScreenshots.test.js",
+    "AWS-viewer-test": "jest viewer_test_automation/AWS_viewerTest.test.js",
+    "AWS-getSrc": "jest viewer_test_automation/AWS_getSrcScreenshots.test.js"
   },
   "author": "Roman Korovko",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1232.0",
     "axios": "^0.27.2",
-    "jest": "^29.0.3",
+    "jest": "29.2.0",
     "pixelmatch": "^5.3.0",
     "pngjs": "^6.0.0",
-    "selenium-webdriver": "^4.4.0"
+    "selenium-webdriver": "^4.4.0",
+    "uuid": "^9.0.0",
+    "viewer-test": "^1.0.11"
   },
   "devDependencies": {
     "browserstack-node-sdk": "^1.2.7",
